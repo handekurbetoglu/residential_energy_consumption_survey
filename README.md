@@ -138,11 +138,11 @@ GALLON: Energy consumption in Gallons
 CUBIC_FEET: Energy consumption in Cubic Feet
 USESOLAR: Whether solar energy is used
 
-### Example Data:
-DOEID  Purpose           Type  BTU       KWH      GALLON  CUBIC_FEET  USESOLAR
-1      Refrigerator      EL    5170.899  1515.504  0.0     0.000      0
-1      Air Conditioner  EL    10470.729  3068.795  0.0     0.000      0
-...
+	### Example Data:
+	DOEID  Purpose           Type  BTU       KWH      GALLON  CUBIC_FEET  USESOLAR
+	1      Refrigerator      EL    5170.899  1515.504  0.0     0.000      0
+	1      Air Conditioner  EL    10470.729  3068.795  0.0     0.000      0
+	...
 
 
 ## Conclusion
