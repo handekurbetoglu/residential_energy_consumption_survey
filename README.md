@@ -127,16 +127,17 @@ Combine all the relevant energy data into a single comprehensive DataFrame.
 
 
 ## Resulting Dataset
+
 The final dataset total_and_solar contains the following columns:
 
-DOEID: Unique Identifier
-Purpose: Purpose of energy usage (e.g., Space Heating, Water Heating, Refrigerator, etc.)
-Type: Type of energy source (e.g., Electricity (EL), Natural Gas (NG), etc.)
-BTU: Energy consumption in BTU
-KWH: Energy consumption in Kilowatt-Hour
-GALLON: Energy consumption in Gallons
-CUBIC_FEET: Energy consumption in Cubic Feet
-USESOLAR: Whether solar energy is used
+	DOEID: Unique Identifier
+	Purpose: Purpose of energy usage (e.g., Space Heating, Water Heating, Refrigerator, etc.)
+	Type: Type of energy source (e.g., Electricity (EL), Natural Gas (NG), etc.)
+	BTU: Energy consumption in BTU
+	KWH: Energy consumption in Kilowatt-Hour
+	GALLON: Energy consumption in Gallons
+	CUBIC_FEET: Energy consumption in Cubic Feet
+	USESOLAR: Whether solar energy is used
 
 	### Example Data:
 	DOEID  Purpose           Type  BTU       KWH      GALLON  CUBIC_FEET  USESOLAR
