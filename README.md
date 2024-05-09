@@ -28,101 +28,101 @@ Combine all the relevant energy data into a single comprehensive DataFrame.
 
 
 ## Code
-import pandas as pd
-import re
-import numpy as np
-
-# Load the data
-data_csv = pd.read_csv('recs2009_public.csv')
-data = pd.DataFrame(data_csv)
-
-# Define the column lists based on energy sources
-liste = ['DOEID', 'KWHSPH', 'KWHWTH', 'KWHOTH', 'KWHCOL', 'KWHRFG', 'BTULPSPH', 'BTULPWTH', 'BTULPOTH', 
-         'BTUNGSPH', 'BTUNGWTH', 'BTUNGOTH', 'BTUFOSPH', 'BTUFOWTH', 'BTUFOOTH', 'BTUKERSPH', 
-         'BTUKERWTH', 'BTUKEROTH', 'BTUELSPH', 'BTUELWTH', 'BTUELOTH', 'GALLONLPSPH', 'GALLONLPWTH', 
-         'GALLONLPOTH', 'GALLONFOSPH', 'GALLONFOWTH', 'GALLONFOOTH', 'GALLONKERSPH', 'GALLONKERWTH', 
-         'GALLONKEROTH', 'CUFEETNGSPH', 'CUFEETNGWTH', 'CUFEETNGOTH', 'BTUELCOL', 'BTUELRFG', 'BTUWOOD']
-
-# Organize the columns into separate lists based on energy source
-kwh_liste = ['DOEID']
-btu_liste = ['DOEID']
-gallon_liste = ['DOEID']
-cufeet_liste = ['DOEID']
-
-for label in liste:
-    if "KWH" in label:
-        kwh_liste.append(label)
-    if 'BTU' in label:
-        btu_liste.append(label)
-    if 'GALLON' in label:
-        gallon_liste.append(label)
-    if 'CUFEET' in label:
-        cufeet_liste.append(label)
-
-# Create separate DataFrames for each energy source
-kwh_df = data[kwh_liste]
-btu_df = data[btu_liste]
-gallon_df = data[gallon_liste]
-cufeet_df = data[cufeet_liste]
-solar_user = data[['DOEID', 'USESOLAR']]
-
-# Melt each DataFrame into a long format
-kwh_df = kwh_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='KWH')
-btu_df = btu_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='BTU')
-gallon_df = gallon_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='GALLON')
-cufeet_df = cufeet_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='CUBIC_FEET')
-
-# Process BTU Data
-btu_df['Purpose_of_Usage'] = btu_df.Purpose_of_Usage.str[3:]
-btu_df['Purpose'] = btu_df.Purpose_of_Usage.str[-3:]
-btu_df['Type'] = btu_df.Purpose_of_Usage.str[:-3]
-btu_df = btu_df[['DOEID', 'Purpose', 'Type', 'BTU']]
-btu_df = btu_df.replace({
-    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
-                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
-})
-
-# Process Cubic Feet Data
-cufeet_df['Purpose_of_Usage'] = cufeet_df.Purpose_of_Usage.str[6:]
-cufeet_df['Purpose'] = cufeet_df.Purpose_of_Usage.str[-3:]
-cufeet_df['Type'] = cufeet_df.Purpose_of_Usage.str[:-3]
-cufeet_df = cufeet_df[['DOEID', 'Type', 'Purpose', 'CUBIC_FEET']]
-cufeet_df = cufeet_df.replace({
-    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
-                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
-})
-
-# Process Gallon Data
-gallon_df['Purpose_of_Usage'] = gallon_df.Purpose_of_Usage.str[6:]
-gallon_df['Type'] = gallon_df.Purpose_of_Usage.str[:-3]
-gallon_df['Purpose'] = gallon_df.Purpose_of_Usage.str[-3:]
-gallon_df = gallon_df[['DOEID', 'Purpose', 'Type', 'GALLON']]
-gallon_df = gallon_df.replace({
-    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
-                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
-})
-
-# Process KWH Data
-kwh_df['Purpose'] = kwh_df.Purpose_of_Usage.str[-3:]
-kwh_df['Type'] = 'EL'
-kwh_df = kwh_df[['DOEID', 'Purpose', 'Type', 'KWH']]
-kwh_df = kwh_df.replace({
-    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
-                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
-})
-
-# Merge the cleaned data frames
-btu_kwh = pd.merge(btu_df, kwh_df, on=['DOEID', 'Purpose', 'Type'], how='outer')
-gallon_cufeet = pd.merge(gallon_df, cufeet_df, on=['DOEID', 'Purpose', 'Type'], how='outer')
-total = pd.merge(btu_kwh, gallon_cufeet, on=['DOEID', 'Purpose', 'Type'], how='outer')
-total = total.fillna(0)
-total = total.drop(total[((total['BTU'] == 0) & (total['KWH'] == 0) & (total['GALLON'] == 0) & (total['CUBIC_FEET'] == 0))].index)
-
-# Add solar user data
-total_and_solar = pd.merge(total, solar_user, on='DOEID', how='outer')
-
-# Final dataset
-total_and_solar
+		import pandas as pd
+		import re
+		import numpy as np
+		
+		# Load the data
+		data_csv = pd.read_csv('recs2009_public.csv')
+		data = pd.DataFrame(data_csv)
+		
+		# Define the column lists based on energy sources
+		liste = ['DOEID', 'KWHSPH', 'KWHWTH', 'KWHOTH', 'KWHCOL', 'KWHRFG', 'BTULPSPH', 'BTULPWTH', 'BTULPOTH', 
+		         'BTUNGSPH', 'BTUNGWTH', 'BTUNGOTH', 'BTUFOSPH', 'BTUFOWTH', 'BTUFOOTH', 'BTUKERSPH', 
+		         'BTUKERWTH', 'BTUKEROTH', 'BTUELSPH', 'BTUELWTH', 'BTUELOTH', 'GALLONLPSPH', 'GALLONLPWTH', 
+		         'GALLONLPOTH', 'GALLONFOSPH', 'GALLONFOWTH', 'GALLONFOOTH', 'GALLONKERSPH', 'GALLONKERWTH', 
+		         'GALLONKEROTH', 'CUFEETNGSPH', 'CUFEETNGWTH', 'CUFEETNGOTH', 'BTUELCOL', 'BTUELRFG', 'BTUWOOD']
+		
+		# Organize the columns into separate lists based on energy source
+		kwh_liste = ['DOEID']
+		btu_liste = ['DOEID']
+		gallon_liste = ['DOEID']
+		cufeet_liste = ['DOEID']
+		
+		for label in liste:
+		    if "KWH" in label:
+		        kwh_liste.append(label)
+		    if 'BTU' in label:
+		        btu_liste.append(label)
+		    if 'GALLON' in label:
+		        gallon_liste.append(label)
+		    if 'CUFEET' in label:
+		        cufeet_liste.append(label)
+		
+		# Create separate DataFrames for each energy source
+		kwh_df = data[kwh_liste]
+		btu_df = data[btu_liste]
+		gallon_df = data[gallon_liste]
+		cufeet_df = data[cufeet_liste]
+		solar_user = data[['DOEID', 'USESOLAR']]
+		
+		# Melt each DataFrame into a long format
+		kwh_df = kwh_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='KWH')
+		btu_df = btu_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='BTU')
+		gallon_df = gallon_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='GALLON')
+		cufeet_df = cufeet_df.melt(id_vars='DOEID', var_name='Purpose_of_Usage', value_name='CUBIC_FEET')
+		
+		# Process BTU Data
+		btu_df['Purpose_of_Usage'] = btu_df.Purpose_of_Usage.str[3:]
+		btu_df['Purpose'] = btu_df.Purpose_of_Usage.str[-3:]
+		btu_df['Type'] = btu_df.Purpose_of_Usage.str[:-3]
+		btu_df = btu_df[['DOEID', 'Purpose', 'Type', 'BTU']]
+		btu_df = btu_df.replace({
+		    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
+		                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
+		})
+		
+		# Process Cubic Feet Data
+		cufeet_df['Purpose_of_Usage'] = cufeet_df.Purpose_of_Usage.str[6:]
+		cufeet_df['Purpose'] = cufeet_df.Purpose_of_Usage.str[-3:]
+		cufeet_df['Type'] = cufeet_df.Purpose_of_Usage.str[:-3]
+		cufeet_df = cufeet_df[['DOEID', 'Type', 'Purpose', 'CUBIC_FEET']]
+		cufeet_df = cufeet_df.replace({
+		    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
+		                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
+		})
+		
+		# Process Gallon Data
+		gallon_df['Purpose_of_Usage'] = gallon_df.Purpose_of_Usage.str[6:]
+		gallon_df['Type'] = gallon_df.Purpose_of_Usage.str[:-3]
+		gallon_df['Purpose'] = gallon_df.Purpose_of_Usage.str[-3:]
+		gallon_df = gallon_df[['DOEID', 'Purpose', 'Type', 'GALLON']]
+		gallon_df = gallon_df.replace({
+		    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
+		                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
+		})
+		
+		# Process KWH Data
+		kwh_df['Purpose'] = kwh_df.Purpose_of_Usage.str[-3:]
+		kwh_df['Type'] = 'EL'
+		kwh_df = kwh_df[['DOEID', 'Purpose', 'Type', 'KWH']]
+		kwh_df = kwh_df.replace({
+		    'Purpose': {'OOD': 'WOOD', 'SPH': 'Space Heating', 'WTH': 'Water Heating', 'OTH': 'Other',
+		                'RFG': 'Refrigerator', 'COL': 'Air Conditioner'}
+		})
+		
+		# Merge the cleaned data frames
+		btu_kwh = pd.merge(btu_df, kwh_df, on=['DOEID', 'Purpose', 'Type'], how='outer')
+		gallon_cufeet = pd.merge(gallon_df, cufeet_df, on=['DOEID', 'Purpose', 'Type'], how='outer')
+		total = pd.merge(btu_kwh, gallon_cufeet, on=['DOEID', 'Purpose', 'Type'], how='outer')
+		total = total.fillna(0)
+		total = total.drop(total[((total['BTU'] == 0) & (total['KWH'] == 0) & (total['GALLON'] == 0) & (total['CUBIC_FEET'] == 0))].index)
+		
+		# Add solar user data
+		total_and_solar = pd.merge(total, solar_user, on='DOEID', how='outer')
+		
+		# Final dataset
+		total_and_solar
 
 
 
